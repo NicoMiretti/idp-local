@@ -1,0 +1,34 @@
+# mi-primera-app-app.yaml
+# ArgoCD Application para mi-primera-app dentro del proyecto test-proyecto.
+# Generado automáticamente por Backstage Scaffolder.
+#
+# Primera app de prueba
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-proyecto-mi-primera-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/apps/templates/test-proyecto-mi-primera-app-app.yaml"
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/test-proyecto/base/apps/mi-primera-app
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: test-proyecto
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
