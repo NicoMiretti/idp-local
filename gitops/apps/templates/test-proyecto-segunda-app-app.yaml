@@ -1,0 +1,34 @@
+# segunda-app-app.yaml
+# ArgoCD Application para segunda-app dentro del proyecto test-proyecto.
+# Generado automáticamente por Backstage Scaffolder.
+#
+# App para testear catalog register
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-proyecto-segunda-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/apps/templates/test-proyecto-segunda-app-app.yaml"
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/test-proyecto/base/apps/segunda-app
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: test-proyecto
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
