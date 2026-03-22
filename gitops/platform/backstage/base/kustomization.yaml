@@ -28,6 +28,16 @@ helmCharts:
           tag: latest
           pullPolicy: IfNotPresent
 
+        # El chart pasa solo --config /app/app-config-from-configmap.yaml,
+        # saltándose el app-config.yaml de la imagen que tiene app.baseUrl
+        # compilado. Con extraArgs cargamos primero el config base de la imagen
+        # y después el nuestro — Backstage los mergea en orden.
+        args:
+          - "--config"
+          - "/app/app-config.yaml"
+          - "--config"
+          - "/app/app-config-from-configmap.yaml"
+
         # app-config.yaml mínimo para que Backstage arranque correctamente.
         # baseUrl debe coincidir con la URL pública del portal.
         appConfig:
