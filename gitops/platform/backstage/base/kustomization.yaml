@@ -82,6 +82,8 @@ helmCharts:
           # Permite crear recursos Kubernetes (ArgoCD Applications, namespaces)
           # como step de un template.
           kubernetes:
+            serviceLocatorMethod:
+              type: multiTenant
             clusterLocatorMethods:
               - type: config
                 clusters:
