@@ -46,6 +46,15 @@ helmCharts:
             database:
               client: better-sqlite3
               connection: ":memory:"
+            # Deshabilitar headers de seguridad que fuerzan HTTPS en entorno HTTP local.
+            # Helmet por defecto activa HSTS y upgrade-insecure-requests que rompen HTTP.
+            csp:
+              upgrade-insecure-requests: false
+            helmet:
+              hsts: false
+              contentSecurityPolicy:
+                directives:
+                  upgradeInsecureRequests: false
 
           # Catálogo con los componentes del IDP.
           catalog:
