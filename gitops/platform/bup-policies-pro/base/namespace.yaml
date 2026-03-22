@@ -1,0 +1,10 @@
+# namespace.yaml — bup-policies-pro
+# Namespace del proyecto. Creado y gestionado via GitOps por ArgoCD.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bup-policies-pro
+  labels:
+    app.kubernetes.io/managed-by: argocd
+    idp/project: bup-policies-pro

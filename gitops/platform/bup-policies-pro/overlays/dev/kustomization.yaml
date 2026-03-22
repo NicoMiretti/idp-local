@@ -1,0 +1,9 @@
+# kustomization.yaml — bup-policies-pro overlay dev
+# Overlay para el entorno local Kind.
+# Referencia el base/ sin patches adicionales por ahora.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base

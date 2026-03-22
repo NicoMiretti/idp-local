@@ -1,0 +1,15 @@
+# kustomization.yaml — bup-policies-pro base
+# Manifiestos base del proyecto bup-policies-pro.
+# Esto es un proyecto de prueba
+#
+# Generado automáticamente por Backstage Scaffolder.
+# Agregar recursos Kubernetes aquí (Deployments, Services, ConfigMaps, etc.)
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: bup-policies-pro
+
+resources:
+  - namespace.yaml
+  # Agregar más recursos aquí:
