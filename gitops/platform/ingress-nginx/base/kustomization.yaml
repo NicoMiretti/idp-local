@@ -39,6 +39,10 @@ helmCharts:
           default: true
         admissionWebhooks:
           enabled: false
+        # En Kind con hostNetwork no se usa LoadBalancer — ClusterIP evita
+        # que ArgoCD marque el servicio como Progressing indefinidamente.
+        service:
+          type: ClusterIP
         resources:
           requests:
             cpu: 50m

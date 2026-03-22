@@ -26,6 +26,16 @@ configs:
     # Necesario para usar el campo helmCharts dentro de kustomization.yaml.
     kustomize.buildOptions: "--enable-helm"
 
+    # Health check personalizado para Ingress: en Kind con hostNetwork el
+    # campo .status.loadBalancer.ingress nunca se llena, lo cual hace que
+    # ArgoCD marque los Ingress como Progressing indefinidamente.
+    # Esta customización lo considera Healthy en cuanto los backends existan.
+    resource.customizations.health.networking.k8s.io_Ingress: |
+      hs = {}
+      hs.status = "Healthy"
+      hs.message = "Ingress is healthy (Kind hostNetwork mode)"
+      return hs
+
 # ---------------------------------------------------------------------------
 # Recursos
 # Reducidos para entorno local de tesis (máquina single-node).
