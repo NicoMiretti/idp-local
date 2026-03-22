@@ -1,0 +1,36 @@
+# k8s-dashboard-app.yaml
+# Application de ArgoCD para Kubernetes Dashboard.
+# Este archivo vive en gitops/apps/templates/ y es detectado automáticamente
+# por la root-app (App-of-Apps). ArgoCD lo sincronizará sin intervención manual.
+#
+# Apunta al overlay dev del componente, que incluye el chart oficial del Dashboard
+# y el ServiceAccount admin-user con permisos de cluster-admin.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-dashboard
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    # Apunta al overlay dev — Kustomize resuelve base/ + overlays/dev/
+    path: gitops/platform/k8s-dashboard/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kubernetes-dashboard
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      # Necesario para que Kustomize pueda procesar el helmChart dentro del cluster
+      - ServerSideApply=true

@@ -6,8 +6,8 @@
 # Por ahora es un placeholder funcional. Los recursos se agregarán aquí
 # cuando se implemente Backstage en el IDP.
 #
-# Patrón: este base/ es referenciado por cada overlay (overlays/local/,
-# overlays/dev/, etc.) que agrega parches específicos del ambiente.
+# Patrón: este base/ es referenciado por cada overlay (overlays/dev/,
+# overlays/staging/, etc.) que agrega parches específicos del ambiente.
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

@@ -1,0 +1,21 @@
+# kustomization.yaml — Monitoring overlay dev
+# Customizaciones específicas para el ambiente dev (Kind single-node).
+# Extiende el base/ con parches o valores propios del entorno dev.
+#
+# Ejemplos de lo que irá aquí en el futuro:
+# - Values de Prometheus/Grafana con retención reducida para dev
+# - Recursos de CPU/memoria ajustados para la máquina de tesis
+# - Desactivar componentes innecesarios en dev (alertmanager, etc.)
+# - Ingress dev para acceder a la UI de Grafana
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Referencia al base común
+bases:
+  - ../../base
+
+# Los patches para el ambiente dev se agregarán aquí. Ejemplo futuro:
+# patches:
+#   - path: patch-retention.yaml
+#   - path: patch-resources.yaml

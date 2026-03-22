@@ -66,10 +66,10 @@ Cada componente de plataforma sigue el patrón:
 componente/
 ├── base/             ← manifiestos comunes, sin diferencias entre ambientes
 └── overlays/
-    └── local/        ← patches específicos para Kind local
+    └── dev/          ← patches específicos para Kind dev (ambiente actual)
 ```
 
-Escalar a nuevos ambientes (dev, staging, prod) = agregar una carpeta en `overlays/`.
+Escalar a nuevos ambientes (staging, prod) = agregar una carpeta en `overlays/`.
 
 ---
 
@@ -89,10 +89,10 @@ idp-local/
 │   └── platform/
 │       ├── backstage/       # Manifiestos Kustomize de Backstage
 │       │   ├── base/
-│       │   └── overlays/local/
+│       │   └── overlays/dev/
 │       └── monitoring/      # Manifiestos Kustomize de Prometheus + Grafana
 │           ├── base/
-│           └── overlays/local/
+│           └── overlays/dev/
 ├── ansible/
 │   ├── playbooks/           # Playbooks de aprovisionamiento del host
 │   └── inventory/           # Inventario de Ansible

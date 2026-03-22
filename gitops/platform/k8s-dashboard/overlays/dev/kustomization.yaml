@@ -1,0 +1,20 @@
+# kustomization.yaml — k8s-dashboard overlay dev
+# Customizaciones específicas para el ambiente dev (Kind single-node).
+# Extiende el base/ con parches propios del entorno dev.
+#
+# En dev el Dashboard corre sin ingress — se accede via port-forward:
+#   kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+#   → https://localhost:8443
+#
+# Token de acceso:
+#   kubectl -n kubernetes-dashboard create token admin-user
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../../base
+
+# Los patches para el ambiente dev se agregarán aquí. Ejemplo futuro:
+# patches:
+#   - path: patch-resources.yaml
