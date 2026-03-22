@@ -21,6 +21,10 @@ spec:
     targetRevision: HEAD
     # Apunta al overlay dev — Kustomize resuelve base/ + overlays/dev/
     path: gitops/platform/k8s-dashboard/overlays/dev
+    kustomize:
+      # Habilita el procesamiento de helmCharts dentro de kustomization.yaml.
+      # Equivalente a pasar --enable-helm al binario de kustomize.
+      enableHelm: true
 
   destination:
     server: https://kubernetes.default.svc
