@@ -19,7 +19,9 @@ namespace: headlamp
 helmCharts:
   - name: headlamp
     repo: https://kubernetes-sigs.github.io/headlamp/
-    version: "0.40.1"
+    # 0.40.1 tiene un bug: pasa -session-ttl al binario que aún no lo soporta.
+    # Usar 0.39.0 hasta que el fix sea publicado.
+    version: "0.39.0"
     releaseName: headlamp
     namespace: headlamp
     valuesInline:
