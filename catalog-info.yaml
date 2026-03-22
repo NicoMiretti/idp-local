@@ -74,22 +74,11 @@ spec:
   owner: user:guest
   system: idp-local
 ---
-apiVersion: scaffolder.backstage.io/v1beta3
-kind: Template
+apiVersion: backstage.io/v1alpha1
+kind: Location
 metadata:
-  name: nuevo-proyecto-idp
-  title: Nuevo Proyecto IDP
-  description: >
-    Crea un nuevo proyecto en el IDP local.
-    Genera el ArgoCD Application en gitops/apps/templates/ del repo idp-local
-    y crea el namespace en el cluster Kind via GitOps.
-  tags:
-    - idp
-    - kubernetes
-    - gitops
-    - argocd
-  annotations:
-    backstage.io/source-location: url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/platform/backstage/templates/nuevo-proyecto-idp.yaml
+  name: idp-templates
+  description: Scaffolder templates del IDP local
 spec:
-  owner: user:guest
-  type: service
+  targets:
+    - ./gitops/platform/backstage/templates/nuevo-proyecto-idp.yaml
