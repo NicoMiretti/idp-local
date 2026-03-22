@@ -79,6 +79,10 @@ secrets.yaml
 *-secret.yaml
 *-secrets.yaml
 
+# Exceptions: allow skeleton files in Backstage templates (these are templates, not real secrets)
+!gitops/platform/backstage/templates/**/secret.yaml
+!gitops/platform/backstage/templates/**/*-secret.yaml
+
 # ---------------------------------------------------------------------------
 # IDEs y sistema operativo
 # ---------------------------------------------------------------------------
