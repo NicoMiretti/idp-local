@@ -1,0 +1,58 @@
+# scaffolder-rbac.yaml
+# Permisos para que el pod de Backstage pueda ejecutar steps del Scaffolder
+# que interactúan con el cluster Kubernetes:
+#
+# 1. ClusterRole: crear namespaces (para nuevos proyectos IDP)
+# 2. Role en argocd: crear/leer ArgoCD Applications (para registrar el proyecto en GitOps)
+#
+# El ServiceAccount "backstage" es creado por el chart backstage/backstage.
+# Estos bindings le dan los permisos mínimos necesarios para el Scaffolder.
+
+---
+# Permiso para crear Namespaces a nivel cluster
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: backstage-scaffolder
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: backstage-scaffolder
+subjects:
+  - kind: ServiceAccount
+    name: backstage
+    namespace: backstage
+roleRef:
+  kind: ClusterRole
+  name: backstage-scaffolder
+  apiGroup: rbac.authorization.k8s.io
+---
+# Permiso para crear ArgoCD Applications en el namespace argocd
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: backstage-argocd
+  namespace: argocd
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["applications"]
+    verbs: ["get", "list", "create", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backstage-argocd
+  namespace: argocd
+subjects:
+  - kind: ServiceAccount
+    name: backstage
+    namespace: backstage
+roleRef:
+  kind: Role
+  name: backstage-argocd
+  apiGroup: rbac.authorization.k8s.io

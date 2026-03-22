@@ -38,6 +38,11 @@ helmCharts:
           - "--config"
           - "/app/app-config-from-configmap.yaml"
 
+        # Exponer el token de GitHub como variable de entorno desde el secret.
+        # El secret github-pat es creado manualmente (nunca va a Git).
+        extraEnvVarsSecrets:
+          - github-pat
+
         appConfig:
           app:
             title: IDP Local
@@ -66,14 +71,34 @@ helmCharts:
               guest:
                 dangerouslyAllowOutsideDevelopment: true
 
+          # Integración con GitHub: usa el PAT del secret github-pat.
+          # Necesario para que el Scaffolder pueda hacer commits al repo idp-local.
+          integrations:
+            github:
+              - host: github.com
+                token: ${token}
+
+          # Scaffolder: usa el ServiceAccount del pod para acceder al cluster.
+          # Permite crear recursos Kubernetes (ArgoCD Applications, namespaces)
+          # como step de un template.
+          kubernetes:
+            clusterLocatorMethods:
+              - type: config
+                clusters:
+                  - url: https://kubernetes.default.svc
+                    name: kind-idp-local
+                    authProvider: serviceAccount
+                    skipTLSVerify: true
+                    serviceAccountToken: ${KUBERNETES_SERVICE_ACCOUNT_TOKEN}
+
           catalog:
             rules:
-              - allow: [Component, System, API, Group, User, Resource, Location]
+              - allow: [Component, System, API, Group, User, Resource, Location, Template]
             locations:
               - type: url
                 target: https://github.com/NicoMiretti/idp-local/blob/main/catalog-info.yaml
                 rules:
-                  - allow: [Component, System]
+                  - allow: [Component, System, Template]
 
           organization:
             name: IDP Local
@@ -91,3 +116,9 @@ helmCharts:
         type: ClusterIP
         ports:
           backend: 7007
+
+# RBAC para que el ServiceAccount backstage pueda crear namespaces
+# y ArgoCD Applications desde el Scaffolder.
+resources:
+  - scaffolder-rbac.yaml
+

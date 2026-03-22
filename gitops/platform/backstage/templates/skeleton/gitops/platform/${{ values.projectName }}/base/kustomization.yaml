@@ -1,0 +1,14 @@
+# kustomization.yaml — ${{ values.projectName }} base
+# Manifiestos base del proyecto ${{ values.projectName }}.
+# ${{ values.description }}
+#
+# Generado automáticamente por Backstage Scaffolder.
+# Agregar recursos Kubernetes aquí (Deployments, Services, ConfigMaps, etc.)
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ${{ values.projectName }}
+
+# Agregar recursos aquí:
+resources: []

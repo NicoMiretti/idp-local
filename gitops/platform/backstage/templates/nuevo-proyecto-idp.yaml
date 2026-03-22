@@ -1,0 +1,91 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: nuevo-proyecto-idp
+  title: Nuevo Proyecto IDP
+  description: >
+    Crea un nuevo proyecto en el IDP local.
+    Genera el ArgoCD Application en gitops/apps/templates/ del repo idp-local
+    y crea el namespace en el cluster Kind via GitOps.
+  tags:
+    - idp
+    - kubernetes
+    - gitops
+    - argocd
+spec:
+  owner: user:guest
+  type: service
+
+  # ---------------------------------------------------------------------------
+  # Formulario que ve el usuario en Backstage
+  # ---------------------------------------------------------------------------
+  parameters:
+    - title: Datos del proyecto
+      required:
+        - projectName
+        - description
+      properties:
+        projectName:
+          title: Nombre del proyecto
+          type: string
+          description: >
+            Nombre en minúsculas con guiones. Se usa como nombre del namespace
+            en Kubernetes y como nombre de la ArgoCD Application.
+          pattern: "^[a-z][a-z0-9-]{1,30}[a-z0-9]$"
+          ui:autofocus: true
+          ui:help: "Ejemplo: mi-proyecto, backend-api, frontend-app"
+        description:
+          title: Descripción
+          type: string
+          description: Descripción breve del proyecto (se incluye en el Application de ArgoCD)
+        repoPath:
+          title: Path del repo (opcional)
+          type: string
+          description: >
+            Path dentro del repo idp-local donde vivirán los manifiestos del
+            proyecto. Por defecto: gitops/platform/<projectName>
+          default: ""
+
+  # ---------------------------------------------------------------------------
+  # Steps del Scaffolder
+  # ---------------------------------------------------------------------------
+  steps:
+    # 1. Renderizar los manifiestos con los valores del formulario
+    - id: render
+      name: Renderizar manifiestos
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          projectName: ${{ parameters.projectName }}
+          description: ${{ parameters.description }}
+          repoPath: ${{ "gitops/platform/" + parameters.projectName if parameters.repoPath == "" else parameters.repoPath }}
+
+    # 2. Publicar el ArgoCD Application en el repo idp-local (branch main)
+    - id: publish
+      name: Publicar en idp-local
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=idp-local&owner=NicoMiretti
+        title: "feat: nuevo proyecto ${{ parameters.projectName }}"
+        description: |
+          Nuevo proyecto IDP creado desde Backstage Scaffolder.
+
+          **Proyecto:** ${{ parameters.projectName }}
+          **Descripción:** ${{ parameters.description }}
+
+          Este PR agrega:
+          - `gitops/apps/templates/${{ parameters.projectName }}-app.yaml` — ArgoCD Application
+          - `gitops/platform/${{ parameters.projectName }}/` — estructura Kustomize base
+        branchName: scaffolder/${{ parameters.projectName }}
+        targetBranchName: main
+
+  # ---------------------------------------------------------------------------
+  # Output: links útiles después de ejecutar el template
+  # ---------------------------------------------------------------------------
+  output:
+    links:
+      - title: Pull Request en GitHub
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Ver en ArgoCD (después del merge)
+        url: http://argocd.local/applications/${{ parameters.projectName }}
