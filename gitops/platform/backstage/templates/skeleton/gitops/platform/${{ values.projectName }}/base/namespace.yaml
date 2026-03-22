@@ -1,0 +1,10 @@
+# namespace.yaml — ${{ values.projectName }}
+# Namespace del proyecto. Creado y gestionado via GitOps por ArgoCD.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${{ values.projectName }}
+  labels:
+    app.kubernetes.io/managed-by: argocd
+    idp/project: ${{ values.projectName }}

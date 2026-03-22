@@ -10,5 +10,6 @@ kind: Kustomization
 
 namespace: test-proyecto
 
-# Agregar recursos aquí:
-resources: []
+resources:
+  - namespace.yaml
+  # Agregar más recursos aquí:
