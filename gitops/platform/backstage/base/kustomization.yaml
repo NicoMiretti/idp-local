@@ -100,7 +100,10 @@ helmCharts:
               - type: url
                 target: https://github.com/NicoMiretti/idp-local/blob/main/catalog-info.yaml
                 rules:
-                  - allow: [Component, System, Template]
+                  - allow: [Component, System, Template, Location]
+            # Reducir el intervalo de procesamiento para que los cambios
+            # se reflejen más rápido (default es ~1 minuto con jitter)
+            processingInterval: { minutes: 1 }
 
           organization:
             name: IDP Local
