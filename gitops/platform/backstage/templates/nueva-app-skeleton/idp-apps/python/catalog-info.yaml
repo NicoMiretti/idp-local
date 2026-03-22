@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.appName }}
+  title: ${{ values.appName }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: NicoMiretti/idp-apps
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-apps/blob/main/${{ values.appName }}/catalog-info.yaml"
+  tags:
+    - idp
+    - ${{ values.language }}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: user:guest
+  system: ${{ values.projectName }}
+  providesApis: []

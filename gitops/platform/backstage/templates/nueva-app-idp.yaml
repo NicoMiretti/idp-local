@@ -149,9 +149,19 @@ spec:
           - `Dockerfile` — listo para buildear y pushear a `registry.local/${{ parameters.projectName }}/${{ parameters.appName }}`
           - Código de ejemplo en ${{ parameters.language }}
           - `README.md` con instrucciones de build y despliegue
+          - `catalog-info.yaml` — entidad Backstage (Component)
         branchName: scaffolder/${{ parameters.projectName }}-${{ parameters.appName }}
         targetBranchName: main
         sourcePath: ./.idp-apps-code
+
+    # 5. Registrar la app en el catálogo de Backstage como Component
+    - id: register
+      name: Registrar en el catálogo de Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://github.com/NicoMiretti/idp-apps/blob/main/${{ parameters.appName }}/catalog-info.yaml
+        optional: true
+
   # ---------------------------------------------------------------------------
   # Output
   # ---------------------------------------------------------------------------
@@ -161,6 +171,8 @@ spec:
         url: ${{ steps['publish-gitops'].output.remoteUrl }}
       - title: PR en idp-apps (código fuente)
         url: ${{ steps['publish-code'].output.remoteUrl }}
+      - title: Ver en el catálogo
+        url: ${{ steps.register.output.entityRef }}
       - title: Ver en ArgoCD (después del merge)
         url: http://argocd.local/applications/${{ parameters.projectName }}-${{ parameters.appName }}
       - title: URL de la app (después del despliegue)

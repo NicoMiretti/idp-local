@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ${{ values.projectName }}
+  title: ${{ values.projectName }}
+  description: ${{ values.description }}
+  annotations:
+    github.com/project-slug: NicoMiretti/idp-local
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/platform/${{ values.projectName }}/catalog-info.yaml"
+  tags:
+    - idp
+    - proyecto
+spec:
+  owner: user:guest
+  domain: idp-local

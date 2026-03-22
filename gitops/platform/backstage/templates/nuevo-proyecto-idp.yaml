@@ -69,8 +69,17 @@ spec:
           Este PR agrega:
           - `gitops/apps/templates/${{ parameters.projectName }}-app.yaml` — ArgoCD Application
           - `gitops/platform/${{ parameters.projectName }}/` — estructura Kustomize base
+          - `gitops/platform/${{ parameters.projectName }}/catalog-info.yaml` — entidad Backstage (System)
         branchName: scaffolder/${{ parameters.projectName }}
         targetBranchName: main
+
+    # 3. Registrar el proyecto en el catálogo de Backstage como System
+    - id: register
+      name: Registrar en el catálogo de Backstage
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://github.com/NicoMiretti/idp-local/blob/main/gitops/platform/${{ parameters.projectName }}/catalog-info.yaml
+        optional: true
 
   # ---------------------------------------------------------------------------
   # Output: links útiles después de ejecutar el template
@@ -81,3 +90,5 @@ spec:
         url: ${{ steps.publish.output.remoteUrl }}
       - title: Ver en ArgoCD (después del merge)
         url: http://argocd.local/applications/${{ parameters.projectName }}
+      - title: Ver en el catálogo (después del merge)
+        url: ${{ steps.register.output.entityRef }}
