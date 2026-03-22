@@ -20,6 +20,12 @@ configs:
     # Habilitar modo inseguro (sin TLS interno) — complementa server.extraArgs
     server.insecure: "true"
 
+  # Configuración global de ArgoCD (argocd-cm)
+  cm:
+    # Habilita --enable-helm en kustomize para todas las Applications.
+    # Necesario para usar el campo helmCharts dentro de kustomization.yaml.
+    kustomize.buildOptions: "--enable-helm"
+
 # ---------------------------------------------------------------------------
 # Recursos
 # Reducidos para entorno local de tesis (máquina single-node).

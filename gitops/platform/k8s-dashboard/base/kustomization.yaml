@@ -1,9 +1,12 @@
 # kustomization.yaml — k8s-dashboard base
-# Manifiestos comunes del Kubernetes Dashboard, sin diferencias entre ambientes.
+# Manifiestos RBAC del Kubernetes Dashboard.
+# Declara el ServiceAccount admin-user con ClusterRoleBinding a cluster-admin,
+# necesario para acceder al Dashboard con visibilidad completa del cluster.
 #
-# Instala el chart oficial kubernetes/dashboard via helmCharts de Kustomize.
-# Además declara los recursos RBAC necesarios para acceso con permisos de admin:
-# un ServiceAccount dedicado + ClusterRoleBinding a cluster-admin.
+# NOTA: el chart del Dashboard se instala via Helm nativo en ArgoCD
+# (spec.sources[0] en k8s-dashboard-app.yaml), no via helmCharts aquí.
+# El chart oficial migró a OCI (registry-1.docker.io/kubernetes/dashboard)
+# y Kustomize no soporta repos OCI en helmCharts.
 #
 # Patrón: este base/ es referenciado por cada overlay (overlays/dev/,
 # overlays/staging/, etc.) que agrega parches específicos del ambiente.
@@ -13,21 +16,5 @@ kind: Kustomization
 
 namespace: kubernetes-dashboard
 
-# Chart oficial de Kubernetes Dashboard
-helmCharts:
-  - name: kubernetes-dashboard
-    repo: https://kubernetes.github.io/dashboard/
-    version: "7.10.4"
-    releaseName: kubernetes-dashboard
-    namespace: kubernetes-dashboard
-    valuesInline:
-      # Deshabilitar el scraping de métricas — no tenemos metrics-server en dev
-      metrics-server:
-        enabled: false
-      app:
-        ingress:
-          enabled: false
-
-# ServiceAccount con permisos de admin y su ClusterRoleBinding
 resources:
   - admin-serviceaccount.yaml
