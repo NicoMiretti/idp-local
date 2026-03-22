@@ -1,0 +1,45 @@
+# kustomization.yaml — ingress-nginx base
+# Instala ingress-nginx via helmCharts de Kustomize.
+# Repo oficial: https://kubernetes.github.io/ingress-nginx
+#
+# Configuración base: un IngressClass "nginx" como default,
+# con recursos reducidos para el entorno local.
+# En Kind el controller corre con hostNetwork y hostPort para que
+# los puertos 80/443 mapeados en kind-config.yaml sean alcanzables.
+#
+# Patrón: referenciado por overlays/ que agregan parches por ambiente.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: ingress-nginx
+    repo: https://kubernetes.github.io/ingress-nginx
+    version: "4.10.1"
+    releaseName: ingress-nginx
+    namespace: ingress-nginx
+    valuesInline:
+      controller:
+        # Necesario en Kind: usa los puertos del host directamente.
+        hostNetwork: true
+        hostPort:
+          enabled: true
+          ports:
+            http: 80
+            https: 443
+        # En Kind solo hay un nodo (control-plane), toleramos el taint.
+        tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
+        # DaemonSet garantiza que el pod corre en el único nodo del cluster.
+        kind: DaemonSet
+        # IngressClass por defecto para que los Ingress sin anotación lo usen.
+        ingressClassResource:
+          default: true
+        admissionWebhooks:
+          enabled: false
+        resources:
+          requests:
+            cpu: 50m
+            memory: 90Mi

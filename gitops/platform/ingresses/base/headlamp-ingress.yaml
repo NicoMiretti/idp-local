@@ -1,0 +1,25 @@
+# headlamp-ingress.yaml
+# Ingress para exponer la UI de Headlamp en http://headlamp.local
+#
+# El service headlamp está en el namespace headlamp, puerto 80.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: headlamp-ingress
+  namespace: headlamp
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: headlamp.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: headlamp
+                port:
+                  number: 80

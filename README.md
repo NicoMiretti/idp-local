@@ -45,6 +45,8 @@ costo de recursos.
 |---|---|---|
 | **Kind** | Cluster Kubernetes local single-node | `bootstrap.sh` |
 | **ArgoCD** | Operador GitOps — sincroniza este repo con el cluster | Helm via `bootstrap.sh` |
+| **ingress-nginx** | Ingress Controller — enruta tráfico HTTP al cluster | ArgoCD (GitOps) |
+| **Headlamp** | Visor de cluster Kubernetes con UI web | ArgoCD (GitOps) |
 | **Backstage** | Portal del desarrollador — catálogo de servicios y scaffolding | ArgoCD (GitOps) |
 | **Monitoring** | Stack Prometheus + Grafana — observabilidad del cluster | ArgoCD (GitOps) |
 | **Ansible** | Automatización de aprovisionamiento de la máquina host | Manual |
@@ -87,6 +89,15 @@ idp-local/
 │   │   ├── root-app.yaml    # App-of-Apps raíz
 │   │   └── templates/       # Applications individuales (una por componente)
 │   └── platform/
+│       ├── ingress-nginx/   # Ingress Controller
+│       │   ├── base/
+│       │   └── overlays/dev/
+│       ├── ingresses/       # Ingress resources (argocd.local, headlamp.local, …)
+│       │   ├── base/
+│       │   └── overlays/dev/
+│       ├── headlamp/        # Visor de cluster Kubernetes
+│       │   ├── base/
+│       │   └── overlays/dev/
 │       ├── backstage/       # Manifiestos Kustomize de Backstage
 │       │   ├── base/
 │       │   └── overlays/dev/
@@ -127,12 +138,40 @@ chmod +x bootstrap/bootstrap.sh
 
 # 3. Ejecutar el bootstrap
 ./bootstrap/bootstrap.sh
+```
 
-# 4. Acceder a la UI de ArgoCD
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-# → https://localhost:8080
-# Usuario: admin
-# Password: kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+### Configurar /etc/hosts
+
+Para acceder a los servicios por nombre de dominio, agregar las siguientes
+entradas a `/etc/hosts` en la máquina local:
+
+```
+127.0.0.1  argocd.local
+127.0.0.1  headlamp.local
+```
+
+```bash
+# Atajo para agregar las entradas (requiere sudo):
+echo "127.0.0.1  argocd.local headlamp.local" | sudo tee -a /etc/hosts
+```
+
+### Acceso a los servicios
+
+Después del bootstrap y una vez que ArgoCD sincronice ingress-nginx
+(puede tardar 1-2 minutos):
+
+| Servicio | URL | Credenciales |
+|---|---|---|
+| **ArgoCD** | http://argocd.local | usuario: `admin` / password: ver abajo |
+| **Headlamp** | http://headlamp.local | token del ServiceAccount admin-user (ver abajo) |
+
+```bash
+# Password de ArgoCD
+kubectl get secret argocd-initial-admin-secret -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d && echo
+
+# Token para Headlamp (Kubernetes >= 1.24 requiere crearlo manualmente)
+kubectl create token admin-user -n headlamp --duration=8760h
 ```
 
 ---

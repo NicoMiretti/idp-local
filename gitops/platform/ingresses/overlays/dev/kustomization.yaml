@@ -1,0 +1,8 @@
+# kustomization.yaml — ingresses overlay dev
+# Referencia el base/ sin parches adicionales para el entorno local.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base

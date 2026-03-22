@@ -1,0 +1,38 @@
+# ingresses-app.yaml
+# Application de ArgoCD para los Ingress resources de la plataforma.
+# Detectada automáticamente por la root-app (App-of-Apps).
+#
+# Este componente agrupa los Ingress de ArgoCD (argocd.local) y
+# Headlamp (headlamp.local). Depende de que ingress-nginx esté corriendo.
+#
+# Nota: el Ingress de ArgoCD vive en namespace argocd pero es desplegado
+# por este ArgoCD Application — ArgoCD puede gestionar recursos en
+# namespaces distintos al suyo propio.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingresses
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/ingresses/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    # namespace aquí es solo el default; cada Ingress declara su propio namespace.
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

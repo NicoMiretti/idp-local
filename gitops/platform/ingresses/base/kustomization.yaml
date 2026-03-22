@@ -1,0 +1,11 @@
+# kustomization.yaml — ingresses base
+# Agrupa los Ingress resources de todos los servicios de la plataforma.
+# Al estar en un componente separado, se puede agregar/modificar Ingresses
+# sin tocar los manifiestos de cada aplicación.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - argocd-ingress.yaml
+  - headlamp-ingress.yaml
