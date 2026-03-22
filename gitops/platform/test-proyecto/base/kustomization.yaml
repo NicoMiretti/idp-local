@@ -1,0 +1,14 @@
+# kustomization.yaml — test-proyecto base
+# Manifiestos base del proyecto test-proyecto.
+# Proyecto de prueba end-to-end del scaffolder
+#
+# Generado automáticamente por Backstage Scaffolder.
+# Agregar recursos Kubernetes aquí (Deployments, Services, ConfigMaps, etc.)
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: test-proyecto
+
+# Agregar recursos aquí:
+resources: []
