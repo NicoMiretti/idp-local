@@ -82,3 +82,4 @@ metadata:
 spec:
   targets:
     - ./gitops/platform/backstage/templates/nuevo-proyecto-idp.yaml
+    - ./gitops/platform/backstage/templates/nueva-app-idp.yaml

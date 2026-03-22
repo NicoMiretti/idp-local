@@ -1,0 +1,14 @@
+# kustomization.yaml — ${{ values.projectName }} apps/${{ values.appName }}
+# Recursos de la aplicación ${{ values.appName }} dentro del proyecto ${{ values.projectName }}.
+# Generado automáticamente por Backstage Scaffolder.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ${{ values.projectName }}
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - configmap.yaml

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ${{ values.appName }}-config
+  namespace: ${{ values.projectName }}
+  labels:
+    app.kubernetes.io/name: ${{ values.appName }}
+    app.kubernetes.io/part-of: ${{ values.projectName }}
+    app.kubernetes.io/managed-by: argocd
+data:
+  # Configuración de la aplicación ${{ values.appName }}.
+  # Agregar variables de entorno aquí.
+  APP_NAME: "${{ values.appName }}"
+  APP_ENV: "dev"
+  APP_PORT: "${{ values.port }}"

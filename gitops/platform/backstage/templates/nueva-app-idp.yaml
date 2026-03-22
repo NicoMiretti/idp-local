@@ -1,0 +1,171 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: nueva-app-idp
+  title: Nueva Aplicación en Proyecto IDP
+  description: >
+    Crea una nueva aplicación dentro de un proyecto IDP existente.
+    Genera los manifiestos Kubernetes (Deployment, Service, Ingress, ConfigMap,
+    Secret de proyecto) via PR en idp-local, y crea la subcarpeta de código
+    en el repo idp-apps con Dockerfile y app de ejemplo lista para buildear.
+  tags:
+    - idp
+    - kubernetes
+    - gitops
+    - argocd
+    - app
+spec:
+  owner: user:guest
+  type: service
+
+  # ---------------------------------------------------------------------------
+  # Formulario
+  # ---------------------------------------------------------------------------
+  parameters:
+    - title: Proyecto destino
+      required:
+        - projectName
+      properties:
+        projectName:
+          title: Nombre del proyecto
+          type: string
+          description: >
+            Nombre del proyecto IDP existente donde se creará la app.
+            El proyecto debe estar ya desplegado (namespace activo en el cluster).
+          pattern: "^[a-z][a-z0-9-]{1,30}[a-z0-9]$"
+          ui:autofocus: true
+          ui:help: "Ejemplo: test-proyecto, mi-proyecto, backend-team"
+
+    - title: Datos de la aplicación
+      required:
+        - appName
+        - description
+        - language
+        - port
+      properties:
+        appName:
+          title: Nombre de la aplicación
+          type: string
+          description: >
+            Nombre en minúsculas con guiones. Se usa como nombre del Deployment,
+            Service e Ingress en Kubernetes.
+          pattern: "^[a-z][a-z0-9-]{1,30}[a-z0-9]$"
+          ui:autofocus: true
+          ui:help: "Ejemplo: backend-api, frontend-web, worker-jobs"
+        description:
+          title: Descripción
+          type: string
+          description: Descripción breve de la aplicación
+        language:
+          title: Lenguaje / Runtime
+          type: string
+          description: Lenguaje de programación de la aplicación
+          default: go
+          enum:
+            - go
+            - python
+            - node
+          enumNames:
+            - "Go"
+            - "Python 3"
+            - "Node.js"
+        port:
+          title: Puerto de la aplicación
+          type: integer
+          description: Puerto en el que escucha el servidor HTTP dentro del contenedor
+          default: 8080
+          minimum: 1024
+          maximum: 65535
+
+  # ---------------------------------------------------------------------------
+  # Steps
+  # ---------------------------------------------------------------------------
+  steps:
+    # 1. Renderizar los manifiestos GitOps (Deployment, Service, Ingress, ConfigMap, Secret, ArgoCD App)
+    - id: render-gitops
+      name: Renderizar manifiestos GitOps
+      action: fetch:template
+      input:
+        url: ./nueva-app-skeleton/gitops
+        targetPath: ./.idp-gitops
+        values:
+          projectName: ${{ parameters.projectName }}
+          appName: ${{ parameters.appName }}
+          description: ${{ parameters.description }}
+          language: ${{ parameters.language }}
+          port: ${{ parameters.port }}
+
+    # 2. Renderizar el código de la app (Dockerfile + source) según el lenguaje elegido
+    - id: render-code
+      name: Renderizar código de la app (${{ parameters.language }})
+      action: fetch:template
+      input:
+        url: ./nueva-app-skeleton/idp-apps/${{ parameters.language }}
+        targetPath: ./.idp-apps-code/${{ parameters.appName }}
+        values:
+          projectName: ${{ parameters.projectName }}
+          appName: ${{ parameters.appName }}
+          description: ${{ parameters.description }}
+          language: ${{ parameters.language }}
+          port: ${{ parameters.port }}
+
+    # 3. PR en idp-local con los manifiestos GitOps
+    - id: publish-gitops
+      name: Crear PR en idp-local (manifiestos GitOps)
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=idp-local&owner=NicoMiretti
+        title: "feat: nueva app ${{ parameters.appName }} en ${{ parameters.projectName }}"
+        description: |
+          Nueva aplicación creada desde Backstage Scaffolder.
+
+          **App:** ${{ parameters.appName }}
+          **Proyecto:** ${{ parameters.projectName }}
+          **Lenguaje:** ${{ parameters.language }}
+          **Puerto:** ${{ parameters.port }}
+
+          Este PR agrega:
+          - `gitops/apps/templates/${{ parameters.projectName }}-${{ parameters.appName }}-app.yaml` — ArgoCD Application
+          - `gitops/platform/${{ parameters.projectName }}/base/apps/${{ parameters.appName }}/` — manifiestos Kustomize (Deployment, Service, Ingress, ConfigMap)
+          - `gitops/platform/${{ parameters.projectName }}/base/secret.yaml` — Secret del proyecto (idempotente, compartido por todas las apps)
+
+          > **Nota:** El Secret del proyecto (`${{ parameters.projectName }}-secret`) es compartido por todas las apps.
+          > Si ya existe en el repo, este archivo no modifica el existente — ArgoCD aplica con ServerSideApply (idempotente).
+        branchName: scaffolder/${{ parameters.projectName }}-${{ parameters.appName }}
+        targetBranchName: main
+        sourcePath: ./.idp-gitops
+
+    # 4. PR en idp-apps con el código de la aplicación
+    - id: publish-code
+      name: Crear PR en idp-apps (código fuente)
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?repo=idp-apps&owner=NicoMiretti
+        title: "feat: inicializar app ${{ parameters.appName }} (${{ parameters.projectName }})"
+        description: |
+          Código inicial de la app ${{ parameters.appName }}.
+
+          **App:** ${{ parameters.appName }}
+          **Proyecto:** ${{ parameters.projectName }}
+          **Lenguaje:** ${{ parameters.language }}
+
+          Contiene:
+          - `Dockerfile` — listo para buildear y pushear a `registry.local/${{ parameters.projectName }}/${{ parameters.appName }}`
+          - Código de ejemplo en ${{ parameters.language }}
+          - `README.md` con instrucciones de build y despliegue
+        branchName: scaffolder/${{ parameters.projectName }}-${{ parameters.appName }}
+        targetBranchName: main
+        sourcePath: ./.idp-apps-code
+  # ---------------------------------------------------------------------------
+  # Output
+  # ---------------------------------------------------------------------------
+  output:
+    links:
+      - title: PR en idp-local (manifiestos GitOps)
+        url: ${{ steps['publish-gitops'].output.remoteUrl }}
+      - title: PR en idp-apps (código fuente)
+        url: ${{ steps['publish-code'].output.remoteUrl }}
+      - title: Ver en ArgoCD (después del merge)
+        url: http://argocd.local/applications/${{ parameters.projectName }}-${{ parameters.appName }}
+      - title: URL de la app (después del despliegue)
+        url: http://${{ parameters.appName }}.${{ parameters.projectName }}.local

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${{ values.appName }}
+  namespace: ${{ values.projectName }}
+  labels:
+    app.kubernetes.io/name: ${{ values.appName }}
+    app.kubernetes.io/part-of: ${{ values.projectName }}
+    app.kubernetes.io/managed-by: argocd
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: ${{ values.appName }}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

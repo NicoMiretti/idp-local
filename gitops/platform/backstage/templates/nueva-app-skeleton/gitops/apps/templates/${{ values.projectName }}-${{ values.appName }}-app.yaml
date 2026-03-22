@@ -1,0 +1,34 @@
+# ${{ values.appName }}-app.yaml
+# ArgoCD Application para ${{ values.appName }} dentro del proyecto ${{ values.projectName }}.
+# Generado automáticamente por Backstage Scaffolder.
+#
+# ${{ values.description }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${{ values.projectName }}-${{ values.appName }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/apps/templates/${{ values.projectName }}-${{ values.appName }}-app.yaml"
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/${{ values.projectName }}/base/apps/${{ values.appName }}
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ${{ values.projectName }}
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
