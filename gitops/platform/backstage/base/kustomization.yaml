@@ -38,8 +38,6 @@ helmCharts:
           - "--config"
           - "/app/app-config-from-configmap.yaml"
 
-        # app-config.yaml mínimo para que Backstage arranque correctamente.
-        # baseUrl debe coincidir con la URL pública del portal.
         appConfig:
           app:
             title: IDP Local
@@ -52,7 +50,6 @@ helmCharts:
               host: "0.0.0.0"
             cors:
               origin: http://backstage.local
-            # Base de datos en memoria — sin persistencia, suficiente para demo.
             database:
               client: better-sqlite3
               connection: ":memory:"
@@ -61,7 +58,14 @@ helmCharts:
             csp:
               upgrade-insecure-requests: false
 
-          # Catálogo con los componentes del IDP.
+          # dangerouslyAllowOutsideDevelopment: permite guest login cuando
+          # app.baseUrl no es localhost. Requerido desde Backstage 1.26+.
+          # Seguro en este contexto — entorno local de tesis, sin acceso externo.
+          auth:
+            providers:
+              guest:
+                dangerouslyAllowOutsideDevelopment: true
+
           catalog:
             rules:
               - allow: [Component, System, API, Group, User, Resource, Location]
