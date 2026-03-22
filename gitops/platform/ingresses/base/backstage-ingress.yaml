@@ -10,6 +10,10 @@ metadata:
   namespace: backstage
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # Quitar el header HSTS que Backstage inyecta via Helmet.
+    # En entorno local HTTP este header hace que el browser fuerce HTTPS.
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_hide_header Strict-Transport-Security;
 spec:
   ingressClassName: nginx
   rules:

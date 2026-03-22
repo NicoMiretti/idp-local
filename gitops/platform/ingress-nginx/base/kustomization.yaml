@@ -43,6 +43,9 @@ helmCharts:
         # que ArgoCD marque el servicio como Progressing indefinidamente.
         service:
           type: ClusterIP
+        # Habilitar configuration-snippet para poder usar proxy_hide_header
+        # por Ingress (necesario para quitar el header HSTS de Backstage en HTTP local).
+        allowSnippetAnnotations: true
         resources:
           requests:
             cpu: 50m
