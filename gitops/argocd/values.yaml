@@ -1,0 +1,43 @@
+# values.yaml
+# Valores para el Helm chart oficial de ArgoCD (argo/argo-cd).
+# Este archivo es consumido por bootstrap.sh durante la instalación inicial.
+# Referencia del chart: https://artifacthub.io/packages/helm/argo/argo-cd
+
+# ---------------------------------------------------------------------------
+# Servidor
+# ---------------------------------------------------------------------------
+server:
+  # Desactivar TLS en el servidor internamente — el ingress maneja TLS.
+  # Necesario para funcionar detrás de un ingress controller en Kind.
+  extraArgs:
+    - --insecure
+
+# ---------------------------------------------------------------------------
+# Configuración global de ArgoCD
+# ---------------------------------------------------------------------------
+configs:
+  params:
+    # Habilitar modo inseguro (sin TLS interno) — complementa server.extraArgs
+    server.insecure: "true"
+
+# ---------------------------------------------------------------------------
+# Recursos
+# Reducidos para entorno local de tesis (máquina single-node).
+# ---------------------------------------------------------------------------
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+notifications:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi

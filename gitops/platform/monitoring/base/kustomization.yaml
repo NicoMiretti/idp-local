@@ -1,0 +1,26 @@
+# kustomization.yaml — Monitoring base
+# Manifiestos comunes del stack de monitoreo, sin diferencias entre ambientes.
+# El stack previsto es Prometheus + Grafana, consumidos via sus Helm charts
+# oficiales usando el campo helmCharts de Kustomize.
+#
+# Por ahora es un placeholder funcional. Los recursos se agregarán aquí
+# cuando se implemente el stack de monitoreo en el IDP.
+#
+# Patrón: este base/ es referenciado por cada overlay (overlays/local/,
+# overlays/dev/, etc.) que agrega parches específicos del ambiente.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Namespace donde se desplegará el stack de monitoreo
+namespace: monitoring
+
+# Los helmCharts se agregarán aquí. Ejemplo futuro:
+# helmCharts:
+#   - name: kube-prometheus-stack
+#     repo: https://prometheus-community.github.io/helm-charts
+#     version: "x.x.x"
+#     releaseName: prometheus
+#     namespace: monitoring
+#     valuesFile: values.yaml
+resources: []

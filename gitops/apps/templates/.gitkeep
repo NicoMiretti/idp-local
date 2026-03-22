@@ -1,0 +1,5 @@
+# .gitkeep
+# Archivo placeholder para preservar esta carpeta en Git.
+# Las Applications individuales de ArgoCD (una por componente de plataforma)
+# se agregarán aquí. Ejemplo: backstage-app.yaml, monitoring-app.yaml.
+# La root-app (gitops/apps/root-app.yaml) apunta a este directorio.

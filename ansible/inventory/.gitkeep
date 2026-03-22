@@ -1,0 +1,4 @@
+# .gitkeep
+# Placeholder para preservar la carpeta en Git.
+# El inventario de Ansible se define aquí.
+# Ejemplo: hosts.yaml con los nodos del cluster o la máquina local.

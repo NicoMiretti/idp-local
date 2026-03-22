@@ -1,0 +1,38 @@
+# root-app.yaml
+# App-of-Apps raíz de ArgoCD — punto de entrada del patrón App-of-Apps.
+# Esta Application apunta al directorio gitops/apps/templates/ del repositorio.
+# ArgoCD descubrirá y desplegará automáticamente todas las Applications
+# definidas en ese directorio. Para agregar un nuevo componente al IDP,
+# basta con crear un archivo .yaml en gitops/apps/templates/.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  # Finalizer que garantiza que ArgoCD elimine los recursos hijos
+  # antes de eliminar esta Application (cascade delete).
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    # Apunta al repositorio Git del IDP. Ajustar la URL cuando el repo
+    # tenga remote configurado.
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    # Directorio donde viven las Applications hijas (App-of-Apps pattern)
+    path: gitops/apps/templates
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      # Sincronizar automáticamente cuando hay cambios en Git
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

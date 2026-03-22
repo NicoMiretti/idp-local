@@ -1,0 +1,19 @@
+# kind-config.yaml
+# Configuración del cluster Kind para el IDP local.
+# Un único nodo que actúa como control-plane (entorno de tesis, no necesita workers).
+# Los puertos 80 y 443 se mapean al host para exponer servicios via ingress.
+
+apiVersion: kind.x-k8s.io/v1alpha4
+kind: Cluster
+name: idp-local
+
+nodes:
+  - role: control-plane
+    # Mapeo de puertos del host al nodo para acceso a servicios via Ingress
+    extraPortMappings:
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP

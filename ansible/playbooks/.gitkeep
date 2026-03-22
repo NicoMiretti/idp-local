@@ -1,0 +1,4 @@
+# .gitkeep
+# Placeholder para preservar la carpeta en Git.
+# Los playbooks de Ansible se agregarán aquí.
+# Ejemplo: site.yaml, install-deps.yaml, configure-kind.yaml

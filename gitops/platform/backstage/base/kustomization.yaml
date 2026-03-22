@@ -1,0 +1,24 @@
+# kustomization.yaml — Backstage base
+# Manifiestos comunes de Backstage, sin diferencias entre ambientes.
+# Este directorio es la fuente de verdad de los recursos de Backstage:
+# Deployment, Service, ConfigMap, ServiceAccount, etc.
+#
+# Por ahora es un placeholder funcional. Los recursos se agregarán aquí
+# cuando se implemente Backstage en el IDP.
+#
+# Patrón: este base/ es referenciado por cada overlay (overlays/local/,
+# overlays/dev/, etc.) que agrega parches específicos del ambiente.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Namespace donde se desplegará Backstage
+namespace: backstage
+
+# Los recursos se agregarán aquí. Ejemplo futuro:
+# resources:
+#   - deployment.yaml
+#   - service.yaml
+#   - configmap.yaml
+#   - serviceaccount.yaml
+resources: []
