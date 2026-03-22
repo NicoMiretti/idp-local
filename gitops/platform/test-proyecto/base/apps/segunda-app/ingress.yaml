@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: segunda-app
+  namespace: test-proyecto
+  labels:
+    app.kubernetes.io/name: segunda-app
+    app.kubernetes.io/part-of: test-proyecto
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: segunda-app.test-proyecto.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: segunda-app
+                port:
+                  name: http

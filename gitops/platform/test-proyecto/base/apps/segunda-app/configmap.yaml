@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: segunda-app-config
+  namespace: test-proyecto
+  labels:
+    app.kubernetes.io/name: segunda-app
+    app.kubernetes.io/part-of: test-proyecto
+    app.kubernetes.io/managed-by: argocd
+data:
+  # Configuración de la aplicación segunda-app.
+  # Agregar variables de entorno aquí.
+  APP_NAME: "segunda-app"
+  APP_ENV: "dev"
+  APP_PORT: "8080"
