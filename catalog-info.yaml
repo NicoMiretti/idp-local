@@ -1,0 +1,75 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: idp-local
+  title: IDP Local
+  description: Internal Developer Platform local para entorno de tesis
+  tags:
+    - idp
+    - kubernetes
+    - gitops
+spec:
+  owner: user:guest
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: argocd
+  title: ArgoCD
+  description: Operador GitOps — sincroniza el repo con el cluster Kubernetes
+  annotations:
+    backstage.io/source-location: url:https://github.com/NicoMiretti/idp-local/tree/main/gitops/argocd
+  tags:
+    - gitops
+    - kubernetes
+  links:
+    - url: http://argocd.local
+      title: ArgoCD UI
+      icon: web
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: idp-local
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: headlamp
+  title: Headlamp
+  description: Visor de cluster Kubernetes con UI web moderna
+  annotations:
+    backstage.io/source-location: url:https://github.com/NicoMiretti/idp-local/tree/main/gitops/platform/headlamp
+  tags:
+    - kubernetes
+    - dashboard
+  links:
+    - url: http://headlamp.local
+      title: Headlamp UI
+      icon: web
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: idp-local
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  title: Backstage
+  description: Portal del desarrollador — catálogo de servicios del IDP
+  annotations:
+    backstage.io/source-location: url:https://github.com/NicoMiretti/idp-local/tree/main/gitops/platform/backstage
+  tags:
+    - developer-portal
+    - idp
+  links:
+    - url: http://backstage.local
+      title: Backstage UI
+      icon: web
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: idp-local

@@ -48,7 +48,6 @@ costo de recursos.
 | **ingress-nginx** | Ingress Controller — enruta tráfico HTTP al cluster | ArgoCD (GitOps) |
 | **Headlamp** | Visor de cluster Kubernetes con UI web | ArgoCD (GitOps) |
 | **Backstage** | Portal del desarrollador — catálogo de servicios y scaffolding | ArgoCD (GitOps) |
-| **Monitoring** | Stack Prometheus + Grafana — observabilidad del cluster | ArgoCD (GitOps) |
 | **Ansible** | Automatización de aprovisionamiento de la máquina host | Manual |
 
 ### Patrón App-of-Apps
@@ -92,7 +91,7 @@ idp-local/
 │       ├── ingress-nginx/   # Ingress Controller
 │       │   ├── base/
 │       │   └── overlays/dev/
-│       ├── ingresses/       # Ingress resources (argocd.local, headlamp.local, …)
+│       ├── ingresses/       # Ingress resources (argocd.local, headlamp.local, backstage.local)
 │       │   ├── base/
 │       │   └── overlays/dev/
 │       ├── headlamp/        # Visor de cluster Kubernetes
@@ -148,11 +147,12 @@ entradas a `/etc/hosts` en la máquina local:
 ```
 127.0.0.1  argocd.local
 127.0.0.1  headlamp.local
+127.0.0.1  backstage.local
 ```
 
 ```bash
 # Atajo para agregar las entradas (requiere sudo):
-echo "127.0.0.1  argocd.local headlamp.local" | sudo tee -a /etc/hosts
+echo "127.0.0.1  argocd.local headlamp.local backstage.local" | sudo tee -a /etc/hosts
 ```
 
 ### Acceso a los servicios
@@ -164,6 +164,7 @@ Después del bootstrap y una vez que ArgoCD sincronice ingress-nginx
 |---|---|---|
 | **ArgoCD** | http://argocd.local | usuario: `admin` / password: ver abajo |
 | **Headlamp** | http://headlamp.local | token del ServiceAccount admin-user (ver abajo) |
+| **Backstage** | http://backstage.local | sin autenticación (demo) |
 
 ```bash
 # Password de ArgoCD

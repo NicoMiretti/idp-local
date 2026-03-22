@@ -1,25 +1,8 @@
-# kustomization.yaml — Backstage overlay dev
-# Customizaciones específicas para el ambiente dev (Kind single-node).
-# Extiende el base/ con parches, imágenes o configuraciones propias del entorno dev.
-#
-# Ejemplos de lo que irá aquí en el futuro:
-# - Patch de replicas (1 replica en dev vs N en prod)
-# - Imagen de Backstage con tag específico para desarrollo
-# - ConfigMap con la URL del cluster dev
-# - Recursos de CPU/memoria reducidos para la máquina de tesis
+# kustomization.yaml — backstage overlay dev
+# Referencia el base/ sin parches adicionales para el entorno local.
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Referencia al base común
 resources:
   - ../../base
-
-# Los patches para el ambiente dev se agregarán aquí. Ejemplo futuro:
-# patches:
-#   - path: patch-replicas.yaml
-#   - path: patch-resources.yaml
-#
-# images:
-#   - name: backstage
-#     newTag: dev

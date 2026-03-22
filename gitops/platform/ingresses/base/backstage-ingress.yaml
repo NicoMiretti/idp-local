@@ -1,0 +1,25 @@
+# backstage-ingress.yaml
+# Ingress para exponer Backstage en http://backstage.local
+#
+# El service backstage está en el namespace backstage, puerto 7007.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backstage-ingress
+  namespace: backstage
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: backstage.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backstage
+                port:
+                  number: 7007

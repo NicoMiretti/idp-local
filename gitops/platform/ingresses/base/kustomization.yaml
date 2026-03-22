@@ -9,3 +9,4 @@ kind: Kustomization
 resources:
   - argocd-ingress.yaml
   - headlamp-ingress.yaml
+  - backstage-ingress.yaml

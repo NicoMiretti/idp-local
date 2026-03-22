@@ -1,24 +1,75 @@
-# kustomization.yaml — Backstage base
-# Manifiestos comunes de Backstage, sin diferencias entre ambientes.
-# Este directorio es la fuente de verdad de los recursos de Backstage:
-# Deployment, Service, ConfigMap, ServiceAccount, etc.
+# kustomization.yaml — backstage base
+# Instala Backstage via chart oficial backstage/backstage.
+# Repo: https://backstage.github.io/charts
 #
-# Por ahora es un placeholder funcional. Los recursos se agregarán aquí
-# cuando se implemente Backstage en el IDP.
+# Usa la imagen demo oficial (ghcr.io/backstage/backstage) con configuración
+# mínima para que el portal sea accesible en backstage.local.
+# PostgreSQL deshabilitado — la imagen demo usa SQLite en memoria.
 #
-# Patrón: este base/ es referenciado por cada overlay (overlays/dev/,
-# overlays/staging/, etc.) que agrega parches específicos del ambiente.
+# appConfig inyecta el app-config.yaml que Backstage necesita para arrancar:
+# baseUrl apunta a backstage.local (HTTP, entorno local).
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Namespace donde se desplegará Backstage
 namespace: backstage
 
-# Los recursos se agregarán aquí. Ejemplo futuro:
-# resources:
-#   - deployment.yaml
-#   - service.yaml
-#   - configmap.yaml
-#   - serviceaccount.yaml
-resources: []
+helmCharts:
+  - name: backstage
+    repo: https://backstage.github.io/charts
+    version: "2.6.3"
+    releaseName: backstage
+    namespace: backstage
+    valuesInline:
+      backstage:
+        image:
+          registry: ghcr.io
+          repository: backstage/backstage
+          tag: latest
+          pullPolicy: IfNotPresent
+
+        # app-config.yaml mínimo para que Backstage arranque correctamente.
+        # baseUrl debe coincidir con la URL pública del portal.
+        appConfig:
+          app:
+            title: IDP Local
+            baseUrl: http://backstage.local
+
+          backend:
+            baseUrl: http://backstage.local
+            listen:
+              port: 7007
+              host: "0.0.0.0"
+            cors:
+              origin: http://backstage.local
+            # Base de datos en memoria — sin persistencia, suficiente para demo.
+            database:
+              client: better-sqlite3
+              connection: ":memory:"
+
+          # Catálogo con los componentes del IDP.
+          catalog:
+            rules:
+              - allow: [Component, System, API, Group, User, Resource, Location]
+            locations:
+              - type: url
+                target: https://github.com/NicoMiretti/idp-local/blob/main/catalog-info.yaml
+                rules:
+                  - allow: [Component, System]
+
+          organization:
+            name: IDP Local
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+
+      # PostgreSQL deshabilitado — demo usa SQLite en memoria.
+      postgresql:
+        enabled: false
+
+      service:
+        type: ClusterIP
+        ports:
+          backend: 7007

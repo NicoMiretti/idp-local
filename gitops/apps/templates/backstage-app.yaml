@@ -1,0 +1,34 @@
+# backstage-app.yaml
+# Application de ArgoCD para Backstage.
+# Detectada automáticamente por la root-app (App-of-Apps).
+#
+# Backstage es el portal del desarrollador del IDP:
+# catálogo de servicios, documentación y scaffolding.
+# Accesible en http://backstage.local una vez que ingress-nginx está corriendo.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backstage
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/backstage/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: backstage
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
