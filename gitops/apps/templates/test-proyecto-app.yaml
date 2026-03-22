@@ -22,7 +22,7 @@ spec:
   source:
     repoURL: https://github.com/NicoMiretti/idp-local.git
     targetRevision: HEAD
-    path: /overlays/dev
+    path: gitops/platform/test-proyecto/overlays/dev
 
   destination:
     server: https://kubernetes.default.svc

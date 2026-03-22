@@ -38,14 +38,6 @@ spec:
           title: Descripción
           type: string
           description: Descripción breve del proyecto (se incluye en el Application de ArgoCD)
-        repoPath:
-          title: Path del repo (opcional)
-          type: string
-          description: >
-            Path dentro del repo idp-local donde vivirán los manifiestos del
-            proyecto. Por defecto: gitops/platform/<projectName>
-          default: ""
-
   # ---------------------------------------------------------------------------
   # Steps del Scaffolder
   # ---------------------------------------------------------------------------
@@ -59,7 +51,7 @@ spec:
         values:
           projectName: ${{ parameters.projectName }}
           description: ${{ parameters.description }}
-          repoPath: ${{ "gitops/platform/" + parameters.projectName if parameters.repoPath == "" else parameters.repoPath }}
+          repoPath: gitops/platform/${{ parameters.projectName }}
 
     # 2. Publicar el ArgoCD Application en el repo idp-local (branch main)
     - id: publish
