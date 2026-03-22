@@ -1,0 +1,37 @@
+# headlamp-app.yaml
+# Application de ArgoCD para Headlamp.
+# Este archivo vive en gitops/apps/templates/ y es detectado automáticamente
+# por la root-app (App-of-Apps). ArgoCD lo sincronizará sin intervención manual.
+#
+# Headlamp es un visor de cluster Kubernetes con UI web moderna.
+# Repo: https://kubernetes-sigs.github.io/headlamp/
+#
+# Apunta al overlay dev que usa helmCharts de Kustomize con el chart oficial.
+# enableHelm es necesario para que ArgoCD pase --enable-helm a kustomize build.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: headlamp
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/headlamp/overlays/dev
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: headlamp
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

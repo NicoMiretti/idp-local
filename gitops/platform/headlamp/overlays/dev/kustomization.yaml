@@ -1,13 +1,13 @@
-# kustomization.yaml — k8s-dashboard overlay dev
+# kustomization.yaml — headlamp overlay dev
 # Customizaciones específicas para el ambiente dev (Kind single-node).
 # Extiende el base/ con parches propios del entorno dev.
 #
-# En dev el Dashboard corre sin ingress — se accede via port-forward:
-#   kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
-#   → https://localhost:8443
+# En dev Headlamp corre sin ingress — se accede via port-forward:
+#   kubectl -n headlamp port-forward svc/headlamp 8080:80
+#   → http://localhost:8080
 #
-# Token de acceso:
-#   kubectl -n kubernetes-dashboard create token admin-user
+# Token de acceso (válido 24h):
+#   kubectl -n headlamp create token admin-user --duration=24h
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

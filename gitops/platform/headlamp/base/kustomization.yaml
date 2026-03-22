@@ -1,0 +1,38 @@
+# kustomization.yaml — headlamp base
+# Manifiestos comunes de Headlamp, sin diferencias entre ambientes.
+#
+# Instala el chart oficial de Headlamp via helmCharts de Kustomize.
+# Repo: https://kubernetes-sigs.github.io/headlamp/
+#
+# Además declara un ServiceAccount admin-user con ClusterRoleBinding
+# a cluster-admin, necesario para que Headlamp pueda ver todos los
+# recursos del cluster al autenticarse con token.
+#
+# Patrón: este base/ es referenciado por cada overlay (overlays/dev/,
+# overlays/staging/, etc.) que agrega parches específicos del ambiente.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: headlamp
+
+helmCharts:
+  - name: headlamp
+    repo: https://kubernetes-sigs.github.io/headlamp/
+    version: "0.40.1"
+    releaseName: headlamp
+    namespace: headlamp
+    valuesInline:
+      # Headlamp corre en modo in-cluster usando el ServiceAccount del pod.
+      # El acceso de admin se da via token del ServiceAccount admin-user (ver abajo).
+      replicaCount: 1
+      ingress:
+        enabled: false
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+
+# ServiceAccount con permisos de cluster-admin para acceder al cluster completo
+resources:
+  - admin-serviceaccount.yaml
