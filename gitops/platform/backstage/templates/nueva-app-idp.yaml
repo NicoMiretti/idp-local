@@ -126,11 +126,7 @@ spec:
 
           Este PR agrega:
           - `gitops/apps/templates/${{ parameters.projectName }}-${{ parameters.appName }}-app.yaml` — ArgoCD Application
-          - `gitops/platform/${{ parameters.projectName }}/base/apps/${{ parameters.appName }}/` — manifiestos Kustomize (Deployment, Service, Ingress, ConfigMap)
-          - `gitops/platform/${{ parameters.projectName }}/base/secret.yaml` — Secret del proyecto (idempotente, compartido por todas las apps)
-
-          > **Nota:** El Secret del proyecto (`${{ parameters.projectName }}-secret`) es compartido por todas las apps.
-          > Si ya existe en el repo, este archivo no modifica el existente — ArgoCD aplica con ServerSideApply (idempotente).
+          - `gitops/platform/${{ parameters.projectName }}/base/apps/${{ parameters.appName }}/` — manifiestos Kustomize (Deployment, Service, Ingress, ConfigMap, Secret)
         branchName: scaffolder/${{ parameters.projectName }}-${{ parameters.appName }}
         targetBranchName: main
         sourcePath: ./.idp-gitops
