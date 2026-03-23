@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emulador
+  namespace: emulador-nintendo
+  labels:
+    app.kubernetes.io/name: emulador
+    app.kubernetes.io/part-of: emulador-nintendo
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: emulador
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: emulador
+        app.kubernetes.io/part-of: emulador-nintendo
+    spec:
+      containers:
+        - name: emulador
+          image: registry.local:5000/emulador-nintendo/emulador:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: admin
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: emulador-config
+          volumeMounts:
+            - name: config
+              mountPath: /config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: emulador-config

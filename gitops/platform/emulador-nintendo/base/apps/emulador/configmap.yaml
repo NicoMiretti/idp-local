@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: emulador-config
+  namespace: emulador-nintendo
+  labels:
+    app.kubernetes.io/name: emulador
+    app.kubernetes.io/part-of: emulador-nintendo
+    app.kubernetes.io/managed-by: argocd
+data:
+  PUID: "1000"
+  PGID: "1000"
+  TZ: "America/Argentina/Buenos_Aires"

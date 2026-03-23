@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emulador
+  namespace: emulador-nintendo
+  labels:
+    app.kubernetes.io/name: emulador
+    app.kubernetes.io/part-of: emulador-nintendo
+    app.kubernetes.io/managed-by: argocd
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: emulador
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+    - name: admin
+      port: 3000
+      targetPort: admin
+      protocol: TCP

@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: emulador
+  namespace: emulador-nintendo
+  labels:
+    app.kubernetes.io/name: emulador
+    app.kubernetes.io/part-of: emulador-nintendo
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: emulador.emulador-nintendo.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emulador
+                port:
+                  name: http
+    - host: emulador-admin.emulador-nintendo.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: emulador
+                port:
+                  name: admin

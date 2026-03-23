@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: emulador-config
+  namespace: emulador-nintendo
+  labels:
+    app.kubernetes.io/name: emulador
+    app.kubernetes.io/part-of: emulador-nintendo
+    app.kubernetes.io/managed-by: argocd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
