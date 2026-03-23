@@ -1,0 +1,36 @@
+# appprueba2-app.yaml
+# ArgoCD Application para appprueba2 dentro del proyecto bup-policies-pro.
+# Generado automáticamente por Backstage Scaffolder.
+#
+# appPrueba2
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bup-policies-pro-appprueba2
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/part-of: bup-policies-pro
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/apps/templates/bup-policies-pro-appprueba2-app.yaml"
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NicoMiretti/idp-local.git
+    targetRevision: HEAD
+    path: gitops/platform/bup-policies-pro/base/apps/appprueba2
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: bup-policies-pro
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true

@@ -1,0 +1,14 @@
+# kustomization.yaml — bup-policies-pro apps/appprueba2
+# Recursos de la aplicación appprueba2 dentro del proyecto bup-policies-pro.
+# Generado automáticamente por Backstage Scaffolder.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: bup-policies-pro
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - configmap.yaml

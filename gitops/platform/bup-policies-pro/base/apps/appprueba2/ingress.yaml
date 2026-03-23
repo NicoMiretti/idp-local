@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: appprueba2
+  namespace: bup-policies-pro
+  labels:
+    app.kubernetes.io/name: appprueba2
+    app.kubernetes.io/part-of: bup-policies-pro
+    app.kubernetes.io/managed-by: argocd
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: appprueba2.bup-policies-pro.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: appprueba2
+                port:
+                  name: http
