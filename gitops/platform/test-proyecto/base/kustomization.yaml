@@ -12,4 +12,5 @@ namespace: test-proyecto
 
 resources:
   - namespace.yaml
+  - secret.yaml
   # Agregar más recursos aquí:

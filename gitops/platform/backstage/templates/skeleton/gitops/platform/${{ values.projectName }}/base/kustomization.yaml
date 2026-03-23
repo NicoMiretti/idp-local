@@ -12,4 +12,5 @@ namespace: ${{ values.projectName }}
 
 resources:
   - namespace.yaml
+  - secret.yaml
   # Agregar más recursos aquí:
