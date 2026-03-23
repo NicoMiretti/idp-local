@@ -11,6 +11,8 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/part-of: test-proyecto
   annotations:
     backstage.io/managed-by-location: "url:https://github.com/NicoMiretti/idp-local/blob/main/gitops/apps/templates/test-proyecto-segunda-app-app.yaml"
 spec:
