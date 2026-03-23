@@ -83,6 +83,9 @@ secrets.yaml
 !gitops/platform/backstage/templates/**/secret.yaml
 !gitops/platform/backstage/templates/**/*-secret.yaml
 
+# Exceptions: allow project base secret.yaml files (placeholder secrets managed by ArgoCD)
+!gitops/platform/*/base/secret.yaml
+
 # ---------------------------------------------------------------------------
 # IDEs y sistema operativo
 # ---------------------------------------------------------------------------
