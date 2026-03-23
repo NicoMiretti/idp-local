@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appprueba2
+  namespace: bup-policies-pro
+  labels:
+    app.kubernetes.io/name: appprueba2
+    app.kubernetes.io/part-of: bup-policies-pro
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: appprueba2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: appprueba2
+        app.kubernetes.io/part-of: bup-policies-pro
+    spec:
+      containers:
+        - name: appprueba2
+          # Imagen que se actualizará via CI/CD cuando se haga push al repo de código.
+          # registry.local:5000/<project>/<app>:latest apunta al registro interno de Kind.
+          image: registry.local:5000/bup-policies-pro/appprueba2:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: appprueba2-config
+            - secretRef:
+                name: bup-policies-pro-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
