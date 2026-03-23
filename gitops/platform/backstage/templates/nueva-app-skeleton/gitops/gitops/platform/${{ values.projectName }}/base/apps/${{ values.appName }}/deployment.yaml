@@ -21,8 +21,8 @@ spec:
       containers:
         - name: ${{ values.appName }}
           # Imagen que se actualizará via CI/CD cuando se haga push al repo de código.
-          # registry.local/<project>/<app>:latest apunta al registro interno de Kind.
-          image: registry.local/${{ values.projectName }}/${{ values.appName }}:latest
+          # registry.local:5000/<project>/<app>:latest apunta al registro interno de Kind.
+          image: registry.local:5000/${{ values.projectName }}/${{ values.appName }}:latest
           imagePullPolicy: Always
           ports:
             - name: http

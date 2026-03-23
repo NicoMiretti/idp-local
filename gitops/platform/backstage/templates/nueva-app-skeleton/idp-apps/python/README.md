@@ -23,10 +23,10 @@ node index.js
 
 ```bash
 # Build
-docker build -t registry.local/${{ values.projectName }}/${{ values.appName }}:latest .
+docker build -t registry.local:5000/${{ values.projectName }}/${{ values.appName }}:latest .
 
 # Push al registro interno de Kind
-docker push registry.local/${{ values.projectName }}/${{ values.appName }}:latest
+docker push registry.local:5000/${{ values.projectName }}/${{ values.appName }}:latest
 ```
 
 ## Acceso

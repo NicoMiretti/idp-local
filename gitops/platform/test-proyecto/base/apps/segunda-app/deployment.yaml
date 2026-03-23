@@ -22,7 +22,7 @@ spec:
         - name: segunda-app
           # Imagen que se actualizará via CI/CD cuando se haga push al repo de código.
           # registry.local/<project>/<app>:latest apunta al registro interno de Kind.
-          image: registry.local/test-proyecto/segunda-app:latest
+          image: registry.local:5000/test-proyecto/segunda-app:latest
           imagePullPolicy: Always
           ports:
             - name: http
