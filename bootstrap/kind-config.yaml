@@ -17,3 +17,10 @@ nodes:
       - containerPort: 443
         hostPort: 443
         protocol: TCP
+
+# Habilita el directorio de hosts de containerd para registros locales inseguros.
+# Los archivos hosts.toml reales se escriben en bootstrap.sh (setup_registry).
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      config_path = "/etc/containerd/certs.d"
